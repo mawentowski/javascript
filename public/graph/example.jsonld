@@ -1,0 +1,137 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://yourdocs.example.com#payments-api",
+      "@type": "WebAPI",
+      "name": "Payments API",
+      "documentation": "https://yourdocs.example.com/payments",
+      "provider": {
+        "@type": "Organization",
+        "name": "YourCo"
+      },
+      "audience": {
+        "@type": "DevelopersAudience"
+      }
+    },
+    {
+      "@id": "https://api.example.com/v1/charges#entrypoint",
+      "@type": "EntryPoint",
+      "urlTemplate": "https://api.example.com/v1/charges{?amount,currency,source,metadata*}",
+      "httpMethod": "POST",
+      "encodingType": "application/json",
+      "contentType": "application/json",
+      "description": "Create a charge.",
+      "subjectOf": [
+        {
+          "@type": "CreativeWork",
+          "name": "OpenAPI 3.1 spec (operation POST /v1/charges)",
+          "url": "https://yourdocs.example.com/openapi.json#/%2Fv1%2Fcharges/post",
+          "encodingFormat": "application/vnd.oai.openapi+json"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Swagger UI (deep link to POST /v1/charges)",
+          "url": "https://yourdocs.example.com/console#/Charges/post_v1_charges"
+        },
+        {
+          "@type": "Dataset",
+          "name": "Postman Collection (importable)",
+          "url": "https://www.postman.com/collections/YOUR_COLLECTION_ID",
+          "encodingFormat": "application/vnd.postman.collection+json"
+        }
+      ]
+    },
+    {
+      "@id": "https://yourdocs.example.com/how-to/create-charge",
+      "@type": "HowTo",
+      "name": "Create a Charge via the Payments API",
+      "totalTime": "PT2M",
+      "tool": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "curl"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Postman"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Review API terms",
+          "text": "You must accept the API Terms before creating charges.",
+          "potentialAction": {
+            "@type": "AuthorizeAction",
+            "actionStatus": "PotentialActionStatus",
+            "expectsAcceptanceOf": {
+              "@type": "Offer",
+              "name": "API Terms of Use",
+              "url": "https://yourdocs.example.com/terms/api",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "target": "https://yourdocs.example.com/terms/api#accept"
+          }
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Examine the operation schema",
+          "text": "Check required fields and response semantics.",
+          "potentialAction": {
+            "@type": "AssessAction",
+            "actionStatus": "PotentialActionStatus",
+            "target": "https://yourdocs.example.com/openapi.json#/%2Fv1%2Fcharges/post",
+            "instrument": {
+              "@id": "https://yourdocs.example.com#payments-api"
+            }
+          }
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Create the charge",
+          "text": "Send a POST request to create a charge.",
+          "potentialAction": {
+            "@type": "CreateAction",
+            "actionStatus": "PotentialActionStatus",
+            "target": {
+              "@id": "https://api.example.com/v1/charges#entrypoint"
+            },
+            "object": {
+              "@type": "Thing",
+              "name": "Charge"
+            },
+            "instrument": {
+              "@id": "https://yourdocs.example.com#payments-api"
+            },
+            "subjectOf": [
+              {
+                "@type": "SoftwareApplication",
+                "name": "Swagger UI (Try it)",
+                "url": "https://yourdocs.example.com/console#/Charges/post_v1_charges"
+              },
+              {
+                "@type": "Dataset",
+                "name": "Postman Request (preconfigured)",
+                "url": "https://www.postman.com/collections/YOUR_COLLECTION_ID#post_v1_charges"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Create charge request (curl)",
+      "programmingLanguage": "curl",
+      "codeSampleType": "full (copy-paste)",
+      "text": "curl -X POST https://api.example.com/v1/charges -H 'Authorization: Bearer YOUR_KEY' -H 'Content-Type: application/json' -d '{\"amount\":100,\"currency\":\"USD\",\"source\":\"tok_visa\"}'",
+      "isBasedOn": "https://yourdocs.example.com/openapi.json#/%2Fv1%2Fcharges/post",
+      "url": "https://yourdocs.example.com/samples/create-charge#curl",
+      "about": {
+        "@id": "https://yourdocs.example.com#payments-api"
+      }
+    }
+  ]
+}

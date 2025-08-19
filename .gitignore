@@ -1,0 +1,14 @@
+# Node
+node_modules/
+*.log
+
+# Build outputs
+dist/
+packages/*/dist/
+
+# Mac system files
+.DS_Store
+
+# Testing examples
+
+packages/xml-to-jsonld/examples/output/
