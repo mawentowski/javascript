@@ -121,3 +121,30 @@ rm -rf node_modules pnpm-lock.yamlpnpm install
 			- Protégé + HermiT or Pellet reasoner
 		- RDF Triple Stores with Validation Support
 			- Ontotext
+- Work on Markdown to XML extraction (need schema.org finalized site first)
+
+
+- Create new organization on Github called "semantic-apis" with repo "atlas-core"
+
+## Pseudo code
+
+code --install-extension sudolang-llm-support-2.0.0-rc.1.vsix
+
+https://medium.com/javascript-scene/sudolang-a-powerful-pseudocode-programming-language-for-llms-d64d42aa719b
+
+https://github.com/paralleldrive/sudolang-llm-support
+
+
+
+
+
+
+Inventory
+	Instances
+	
+## Testing
+
+Testing of dcos is built into the framework - UI / API
+
+
+
