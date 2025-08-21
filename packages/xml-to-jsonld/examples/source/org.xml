@@ -1,0 +1,19 @@
+<!-- <?xml-model href="../packages/schemas/rnc/site-seo.rnc"
+            type="application/relax-ng-compact-syntax"?> -->
+
+<OrgRoot>
+  <name>Acme Inc.</name>
+  <url>https://acme.example</url>
+  <logo>
+    <ImageObject>
+      <url>https://acme.example/logo.png</url>
+    </ImageObject>
+  </logo>
+  <sameAs>https://twitter.com/acme</sameAs>
+  <contactPoint>
+    <ContactPoint>
+      <telephone>+1-555-0100</telephone>
+      <contactType>customer support</contactType>
+    </ContactPoint>
+  </contactPoint>
+</OrgRoot>

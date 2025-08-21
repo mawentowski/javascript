@@ -1,0 +1,46 @@
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Brew Pour-Over Coffee",
+  "description": "A quick guide to consistent, tasty pour-over coffee at home.",
+  "totalTime": "PT6M",
+  "supply": [
+    {
+      "@type": "HowToSupply",
+      "name": "Coffee beans",
+      "requiredQuantity": "20 g"
+    },
+    {
+      "@type": "HowToSupply",
+      "name": "Water",
+      "requiredQuantity": "300 ml"
+    }
+  ],
+  "tool": [
+    {
+      "@type": "HowToTool",
+      "name": "Gooseneck kettle"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Dripper + filter"
+    }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Heat water",
+      "text": "Bring water to ~96°C (205°F)."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Rinse filter",
+      "text": "Rinse paper filter and pre-heat the dripper."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Bloom",
+      "text": "Pour ~40 ml to wet grounds, wait 30–45 s."
+    }
+  ]
+}

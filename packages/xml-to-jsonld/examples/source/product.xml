@@ -1,0 +1,25 @@
+<!-- <?xml-model href="../packages/schemas/rnc/site-seo.rnc"
+            type="application/relax-ng-compact-syntax"?> -->
+<Product>
+  <name>Example Widget</name>
+  <description>A versatile widget for demonstration purposes.</description>
+  <image>
+    <ImageObject>
+      <url>https://example.com/widget.jpg</url>
+    </ImageObject>
+  </image>
+  <sku>WIDGET-001</sku>
+  <brand>
+    <Brand>
+      <name>ExampleCo</name>
+    </Brand>
+  </brand>
+  <offers>
+    <Offer>
+      <priceCurrency>USD</priceCurrency>
+      <price>19.99</price>
+      <availability>InStock</availability>
+      <url>https://example.com/widget</url>
+    </Offer>
+  </offers>
+</Product>

@@ -1,0 +1,33 @@
+{
+  "name": "@semanticapi/xml-to-jsonld",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "aeo-build": "./bin/aeo-build.mjs"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "bin/**",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test:e2e": "node ./bin/aeo-build.mjs examples/product.xml && diff -q examples/product.html examples/product.expected.html || (echo 'HTML mismatch'; exit 1)",
+    "examples:build": "node ./examples/run-all.mjs",
+    "examples:check": "node ./examples/run-all.mjs && diff -ru ./examples/expected ./examples/output || (echo '❌ Differences found'; exit 1)",
+    "examples:clean": "node -e \"import('node:fs/promises').then(fs=>fs.rm('./examples/output',{recursive:true,force:true}))\""
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.4.0",
+    "@semanticapi/schemas": "workspace:^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

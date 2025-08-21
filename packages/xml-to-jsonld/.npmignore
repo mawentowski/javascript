@@ -1,0 +1,15 @@
+# Ignore everything in npm publish except these
+# This will override .gitignore for npm publishing
+
+# Don't ignore dist when publishing
+!dist/
+# Ignore source if you don't want to ship it
+src/
+*.ts
+*.map
+
+# Dev files
+.vscode/
+test/
+tests/
+__tests__/

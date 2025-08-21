@@ -1,0 +1,210 @@
+# --- Schema.org (Google-rich-result focused) authoring schema ---
+# Relax NG Compact (RNC)
+# .rnc and linking packages/schemas/rnc/site-seo.rnc to the XML autocomplete feature so contributors understand why it’s there. .rnc is a alternative to the more verbose .xsd
+
+default namespace = ""
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+# ---------- helpers / datatypes ----------
+Text      = text
+URL       = text
+Integer   = xsd:integer
+Decimal   = xsd:decimal
+Date      = xsd:date
+DateTime  = xsd:dateTime
+Duration  = xsd:duration
+
+# ---------- common building blocks ----------
+ImageObject =
+  element ImageObject {
+    element url     { URL } &
+    element caption { Text }?
+  }
+
+Person =
+  element Person {
+    element name { Text } &
+    element url  { URL }?
+  }
+
+OrganizationCommon =
+  element name { Text } &
+  element url  { URL }? &
+  element logo { ImageObject }? &
+  element sameAs { URL }* &
+  element contactPoint {
+    ( ContactPoint )+
+  }?
+
+ContactPoint =
+  element ContactPoint {
+    element telephone   { Text } &
+    element contactType { Text }
+  }
+
+Organization =
+  element Organization { OrganizationCommon }
+
+PostalAddress =
+  element PostalAddress {
+    element streetAddress   { Text } &
+    element addressLocality { Text } &
+    element addressRegion   { Text }? &
+    element postalCode      { Text } &
+    element addressCountry  { Text }
+  }
+
+OpeningHoursSpecification =
+  element OpeningHoursSpecification {
+    element dayOfWeek { Text }* &
+    element opens     { Text }? &
+    element closes    { Text }?
+  }
+
+Brand =
+  element Brand { element name { Text } }
+
+AggregateRating =
+  element AggregateRating {
+    element ratingValue { Decimal } &
+    element reviewCount { Integer }?
+  }
+
+ReviewRating =
+  element reviewRating {
+    element ratingValue { Decimal } &
+    element bestRating  { Decimal }? &
+    element worstRating { Decimal }?
+  }
+
+Review =
+  element Review {
+    element author       { Person | Organization }? &
+    ReviewRating &
+    element reviewBody   { Text }?
+  }
+
+Offer =
+  element Offer {
+    element price          { Decimal } &
+    element priceCurrency  { Text } &
+    element availability   { URL }? &         # e.g. https://schema.org/InStock
+    element url            { URL }? &
+    element itemCondition  { URL }?           # e.g. https://schema.org/NewCondition
+  }
+
+MonetaryAmount =
+  element MonetaryAmount {
+    element currency { Text } &
+    element value    { Decimal }
+  }
+
+# ---------- ARTICLE (Article / NewsArticle / BlogPosting core) ----------
+Article =
+  element Article {
+    element headline        { Text } &
+    element description     { Text }? &
+    element image           { ImageObject }* &   # Google recommends image(s)
+    element datePublished   { Date | DateTime }? &
+    element dateModified    { Date | DateTime }? &
+    element author          { Person | Organization }? &
+    element publisher       { Organization }? &
+    element mainEntityOfPage{ URL }? &
+    element body { ( element p { Text }
+                   | element section { attribute title { Text }, (element p { Text })+ }
+                   )+ }?
+  }
+
+# ---------- HOWTO ----------
+HowToSupply =
+  element HowToSupply {
+    element name             { Text } &
+    element requiredQuantity { Text }?
+  }
+
+HowToTool =
+  element HowToTool {
+    element name { Text }
+  }
+
+HowToDirection =
+  element HowToDirection {
+    element text { Text } &
+    element url  { URL }?
+  }
+
+HowToStep =
+  element HowToStep {
+    element name      { Text }? &
+    element text      { Text }? &
+    element image     { URL }? &
+    element url       { URL }? &
+    element direction { HowToDirection }*
+  }
+
+HowToSection =
+  element HowToSection {
+    element name { Text } &
+    element step { HowToStep }+
+  }
+
+HowTo =
+  element HowTo {
+    element name          { Text } &
+    element description   { Text }? &
+    element totalTime     { Duration }? &         # e.g., PT30M
+    element estimatedCost { MonetaryAmount }? &
+    element supply        { HowToSupply }* &
+    element tool          { HowToTool }* &
+    ( element step    { HowToStep }+              # flat list of steps
+    | element section { HowToSection }+ )         # or grouped sections
+  }
+
+# ---------- PRODUCT ----------
+Product =
+  element Product {
+    element name            { Text } &
+    element description     { Text }? &
+    element image           { ImageObject }+ &     # image strongly recommended
+    element brand           { Brand }? &
+    element sku             { Text }? &
+    element gtin8           { Text }? &
+    element gtin12          { Text }? &
+    element gtin13          { Text }? &
+    element gtin14          { Text }? &
+    element offers          { Offer }+ &
+    element aggregateRating { AggregateRating }? &
+    element review          { Review }*
+  }
+
+# ---------- BREADCRUMB LIST ----------
+ListItem =
+  element ListItem {
+    element position { Integer } &
+    element name     { Text } &
+    element item     { URL }?
+  }
+
+BreadcrumbList =
+  element BreadcrumbList {
+    element itemListElement { ListItem + }
+  }
+
+# ---------- ORGANIZATION / LOCALBUSINESS ----------
+LocalBusiness =
+  element LocalBusiness {
+    OrganizationCommon &
+    element telephone { Text }? &
+    element address   { PostalAddress }? &
+    element openingHoursSpecification { OpeningHoursSpecification + }? &
+    element priceRange { Text }?
+  }
+
+# ---------- document entry points ----------
+start =
+    Article
+  | HowTo
+  | Product
+  | BreadcrumbList
+  | Organization
+  | LocalBusiness

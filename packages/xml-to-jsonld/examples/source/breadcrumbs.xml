@@ -1,0 +1,22 @@
+<!-- <?xml-model href="../packages/schemas/rnc/site-seo.rnc"
+            type="application/relax-ng-compact-syntax"?> -->
+
+<BreadcrumbList>
+  <itemListElement>
+    <ListItem>
+      <position>1</position>
+      <name>Home</name>
+      <item>/</item>
+    </ListItem>
+    <ListItem>
+      <position>2</position>
+      <name>Shop</name>
+      <item>/shop</item>
+    </ListItem>
+    <ListItem>
+      <position>3</position>
+      <name>Widget</name>
+      <item>/shop/widget</item>
+    </ListItem>
+  </itemListElement>
+</BreadcrumbList>

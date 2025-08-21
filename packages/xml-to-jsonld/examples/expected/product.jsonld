@@ -1,0 +1,22 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Example Widget",
+  "description": "A versatile widget for demonstration purposes.",
+  "image": [
+    "https://example.com/widget.jpg"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "ExampleCo"
+  },
+  "sku": "WIDGET-001",
+  "offers": [
+    {
+      "@type": "Offer",
+      "price": 19.99,
+      "priceCurrency": "USD",
+      "availability": "InStock"
+    }
+  ]
+}

@@ -1,43 +1,87 @@
+# Semantic API Core
+
 XML ➜ JSON-LD (your engine) ➜ Validate ➜ Graph/Sitemap ➜ Query ➜ SSR JSON-LD
 
+## One-time Setup
+
 ```shell
-# pnpm init → create package.json.
-pnpm init
-# make sure Corepack can manage pnpm/yarn.
+# Initialize if needed
+pnpm init -y
+
+# Let Corepack manage pnpm
 corepack enable
-# install the latest pnpm through Corepack.
-corepack prepare pnpm@latest --activate
-# install project dependencies.
+corepack prepare pnpm@10.14.0 --activate
+
+# Install repo toolchain (root has "turbo" + TS).
 pnpm i
+```
 
+## Install workspace deps (where they belong)
 
+Install libs inside the packages that use them (not at the root):
 
-# Building a package
-pnpm --filter @semanticapis/xxxx build
+```shell
+# Example: engine
+pnpm -F @semanticapi/xml-to-jsonld add jsonld n3 xmlbuilder2
 
-# Need these?
-# pnpm add -w jsonld n3 xmlbuilder2 ldkit @comunica/query-sparql
-# pnpm add -D -w typescript ts-node @types/node rdf-validate-shacl
+# Example: query helpers
+pnpm -F @semanticapi/query add @comunica/query-sparql ldkit
 
-# Restart
-rm -rf node_modules pnpm-lock.yamlpnpm install
+# Example: validation
+pnpm -F @semanticapi/validate add rdf-validate-shacl
+
+# Shared dev tooling (local to each pkg that builds)
+pnpm -F @semanticapi/xml-to-jsonld add -D typescript ts-node @types/node
+```
+
+## Build & dev (Turbo orchestrates order + caching)
+
+```shell
+# Build everything, respecting deps (engine → validate → graph → query → ssr)
+pnpm build
+
+# Run all dev scripts in parallel (watch mode where defined)
+pnpm dev
+
+# Build a single package
+pnpm -F @semanticapi/xml-to-jsonld build
+
+# Clean all dists
+pnpm clean
+```
+
+## “Did I break it?” reset
+
+```shell
+rm -rf node_modules pnpm-lock.yaml
+pnpm i
+```
+
+## Package Dependenies
+
+To establish a dev dependecy that points to a package in this workspace, do the following:
+
+```shell
+"@semanticapi/schemas": "workspace:^0.1.0"
 ```
 
 ## Todos
+
 - incorporate packages from /Users/mark/Repos/docsgeek/monorepo
   - Refer to the README for instructions
 
 ## Wishlist
+
 - Need to understand PNPM workspaces better
 - Need to explore to see capabilities to lverage:
   - https://ldkit.io/docs/about-ldkit
 - Roadmap - youre starting with the schema.org MD files instead of OpenAPI because we need to see how those openapi ids are referenced.
-- 
+-
 - AtlasIQ - (mapping data + knowledge)
   - A linked-data engine for building AEO-optimized apps.
   - “A smart mapping engine that turns your content into structured, linked data for search engines and AI.”
 - Goal:
-  - Automatically generate structured data from ___ formats and insert it into head of output, estensive semantic data to promote seo and aeo. JS linked data framework for buidling AEO and SEO optimized web applications with ways of measuring metrics.
+  - Automatically generate structured data from \_\_\_ formats and insert it into head of output, estensive semantic data to promote seo and aeo. JS linked data framework for buidling AEO and SEO optimized web applications with ways of measuring metrics.
   - If you are suggesting that structured data helps AEO you hace to prove it first so after you create the site. You can do this with docsgeek.
 - Steps
   - Take Schema.org tutorial
@@ -53,15 +97,15 @@ rm -rf node_modules pnpm-lock.yamlpnpm install
       - LDKit
         - https://share.google/ygkPzIM6lsajbF5qO
 
-----
+---
 
-  - Deine requirements for OAS conversion based on finished schema.org website.
-  - 
+- Deine requirements for OAS conversion based on finished schema.org website.
+-
 - Schema.org
   - Categorize RDF book notes
   - Take schema.org test again
 - Package to convert OAS to RDF
-  - 
+  -
 - All
   - Typescript tutorial
   - Javascript tutorials relearn + React advanced features
@@ -80,49 +124,47 @@ rm -rf node_modules pnpm-lock.yamlpnpm install
     - Deno
       - https://deno.land/
 
-
 ## Big picture
 
 - ### New Product Focus: Structured data for consumption by LLMs
   tags:: semanticapi
-	- Goals:
-		- Structured data to provide rich search results, where possible, about individual pages.
-		- Structured data for consumption by LLMs
-		- GraphRAG / LLM applications
-		- Testing of instructions (i.e., HowTos) both frontend and APIs
-	- Profound
-		- Analyze AI visibility
-		- https://www.tryprofound.com/
-	- LLMs.text
-		- SPEC
-			- https://github.com/AnswerDotAI/llms-txt?tab=readme-ov-file#format
-	- Strategy for JSON-ld
-		- Everything is based on the pages on your site. All pages must resolve to a viewable URL in the browser. Content negotiation can be done for each page, but you would need to set up a server to do that (your own framework).
-		- Because of this, there is a focus on schema.org to the greatest extent possible, including actions for the API flows.
-	- Site structure:
-		- The resource pages are the links to the resource descriptions in the API reference that have links to other related pages.
-			- ex: https://docs.finix.com/api/authorizations
-	- Redocly json-ld and llms.text support
-		- https://redocly.com/docs/realm/config/seo
-	- Schema.org
-		- Actions
-			- https://schema.org/Action
-			- Read research paper.
-			- Consider using SHACL to define types.'
-		- Potential Actions
-			- https://schema.org/docs/actions.html
-			- Includes Fields and APIs
-	- Syntax checking:
-		- https://json-ld.org/playground/
-		- https://validator.schema.org/
-		- Google rich text analyzer
-	- Schema Validation:
-		- **OWL Ontology Validators (Reasoners)**
-			- Protégé + HermiT or Pellet reasoner
-		- RDF Triple Stores with Validation Support
-			- Ontotext
+  - Goals:
+    - Structured data to provide rich search results, where possible, about individual pages.
+    - Structured data for consumption by LLMs
+    - GraphRAG / LLM applications
+    - Testing of instructions (i.e., HowTos) both frontend and APIs
+  - Profound
+    - Analyze AI visibility
+    - https://www.tryprofound.com/
+  - LLMs.text
+    - SPEC
+      - https://github.com/AnswerDotAI/llms-txt?tab=readme-ov-file#format
+  - Strategy for JSON-ld
+    - Everything is based on the pages on your site. All pages must resolve to a viewable URL in the browser. Content negotiation can be done for each page, but you would need to set up a server to do that (your own framework).
+    - Because of this, there is a focus on schema.org to the greatest extent possible, including actions for the API flows.
+  - Site structure:
+    - The resource pages are the links to the resource descriptions in the API reference that have links to other related pages.
+      - ex: https://docs.finix.com/api/authorizations
+  - Redocly json-ld and llms.text support
+    - https://redocly.com/docs/realm/config/seo
+  - Schema.org
+    - Actions
+      - https://schema.org/Action
+      - Read research paper.
+      - Consider using SHACL to define types.'
+    - Potential Actions
+      - https://schema.org/docs/actions.html
+      - Includes Fields and APIs
+  - Syntax checking:
+    - https://json-ld.org/playground/
+    - https://validator.schema.org/
+    - Google rich text analyzer
+  - Schema Validation:
+    - **OWL Ontology Validators (Reasoners)**
+      - Protégé + HermiT or Pellet reasoner
+    - RDF Triple Stores with Validation Support
+      - Ontotext
 - Work on Markdown to XML extraction (need schema.org finalized site first)
-
 
 - Create new organization on Github called "semantic-apis" with repo "atlas-core"
 
@@ -134,17 +176,9 @@ https://medium.com/javascript-scene/sudolang-a-powerful-pseudocode-programming-l
 
 https://github.com/paralleldrive/sudolang-llm-support
 
-
-
-
-
-
 Inventory
-	Instances
-	
+Instances
+
 ## Testing
 
 Testing of dcos is built into the framework - UI / API
-
-
-
