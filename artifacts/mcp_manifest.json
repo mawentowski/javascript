@@ -1,0 +1,104 @@
+{
+  "tools": [
+    {
+      "name": "payouts.get",
+      "version": "1.3.0",
+      "description": "Fetch a payout by id. Use after create/list.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "http": {
+        "baseURL": "https://api.example.com",
+        "method": "GET",
+        "pathTemplate": "/v1/payouts/{id}",
+        "headers": [
+          "Authorization"
+        ]
+      },
+      "policy": {
+        "requiresConfirmation": false,
+        "rateLimitRPM": 120
+      }
+    },
+    {
+      "name": "payouts.create",
+      "version": "1.3.0",
+      "description": "Create a payout; returns an id to poll.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 1
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR"
+            ]
+          },
+          "destination": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "currency",
+          "destination"
+        ]
+      },
+      "http": {
+        "baseURL": "https://api.example.com",
+        "method": "POST",
+        "pathTemplate": "/v1/payouts",
+        "headers": [
+          "Authorization"
+        ]
+      },
+      "policy": {
+        "requiresConfirmation": true,
+        "rateLimitRPM": 6
+      }
+    }
+  ],
+  "flows": [
+    {
+      "name": "payouts.create_and_wait",
+      "description": "Create a payout then poll until status=paid (\u226460s).",
+      "steps": [
+        {
+          "tool": "payouts.create",
+          "carry": [
+            {
+              "from": "$.data.id",
+              "as": "payoutId"
+            }
+          ]
+        },
+        {
+          "tool": "payouts.get",
+          "args": {
+            "id": "{{payoutId}}"
+          },
+          "until": {
+            "jsonpath": "$.data.status",
+            "equals": "paid",
+            "timeoutSec": 60
+          }
+        }
+      ],
+      "policy": {
+        "requiresConfirmation": true
+      }
+    }
+  ]
+}

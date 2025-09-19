@@ -1,0 +1,131 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "sa": "https://semanticapis.dev/ns#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "graph://snapshot/example",
+  "@type": "Dataset",
+  "@graph": [
+    {
+      "@id": "graph://api",
+      "@type": "WebAPI",
+      "name": "Payments API",
+      "version": "1.3.0",
+      "documentation": "https://docs.example.com/payments",
+      "prov:wasDerivedFrom": "file://openapi/payments.yaml"
+    },
+    {
+      "@id": "graph://ep/get/v1/payouts/{id}",
+      "@type": "EntryPoint",
+      "name": "Get payout",
+      "httpMethod": "GET",
+      "urlTemplate": "https://api.example.com/v1/payouts/{id}",
+      "description": "Retrieve a payout by id after creation or listing.",
+      "sa:fusedInputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "sa:returnsSchemaId": "graph://schema/Payout",
+      "sa:hasPolicy": "graph://policy/default-read",
+      "sa:version": "1.3.0",
+      "prov:wasDerivedFrom": "oas://operations/getPayout"
+    },
+    {
+      "@id": "graph://ep/post/v1/payouts",
+      "@type": "EntryPoint",
+      "name": "Create payout",
+      "httpMethod": "POST",
+      "urlTemplate": "https://api.example.com/v1/payouts",
+      "description": "Create a payout; returns an id to poll.",
+      "sa:fusedInputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 1
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR"
+            ]
+          },
+          "destination": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "currency",
+          "destination"
+        ]
+      },
+      "sa:returnsSchemaId": "graph://schema/Payout",
+      "sa:hasPolicy": "graph://policy/create-confirm",
+      "sa:version": "1.3.0",
+      "prov:wasDerivedFrom": "oas://operations/createPayout"
+    },
+    {
+      "@id": "graph://flow/create-payout",
+      "@type": "HowTo",
+      "name": "Create a payout and wait until paid",
+      "description": "Create payout, then poll until status=paid (\u226460s).",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Create",
+          "target": {
+            "@id": "graph://ep/post/v1/payouts"
+          },
+          "sa:carryForward": [
+            {
+              "fromJsonPath": "$.data.id",
+              "as": "payoutId"
+            }
+          ]
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Poll",
+          "target": {
+            "@id": "graph://ep/get/v1/payouts/{id}"
+          },
+          "sa:argsTemplate": {
+            "id": "{{payoutId}}"
+          },
+          "sa:until": {
+            "jsonpath": "$.data.status",
+            "equals": "paid",
+            "timeoutSec": 60
+          }
+        }
+      ],
+      "sa:hasPolicy": "graph://policy/create-confirm"
+    },
+    {
+      "@id": "graph://policy/create-confirm",
+      "@type": "CreativeWork",
+      "name": "Create requires confirmation",
+      "sa:requiresConfirmation": true,
+      "sa:rateLimitRPM": 6
+    },
+    {
+      "@id": "graph://policy/default-read",
+      "@type": "CreativeWork",
+      "name": "Default read policy",
+      "sa:requiresConfirmation": false,
+      "sa:rateLimitRPM": 120
+    }
+  ]
+}

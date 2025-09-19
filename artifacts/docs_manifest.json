@@ -1,0 +1,41 @@
+{
+  "pages": [
+    {
+      "id": "payouts.get",
+      "title": "Get payout",
+      "description": "Retrieve a payout by id after creation or listing.",
+      "http": {
+        "method": "GET",
+        "path": "/v1/payouts/{id}"
+      },
+      "inputs": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": "Payout",
+      "examples": [
+        {
+          "curl": "curl https://api.example.com/v1/payouts/po_123"
+        }
+      ]
+    },
+    {
+      "id": "flow.create_and_wait",
+      "title": "Create and Wait for Payout",
+      "description": "Create payout, then poll until status=paid (\u226460s).",
+      "steps": [
+        {
+          "action": "POST /v1/payouts",
+          "notes": "Create payout"
+        },
+        {
+          "action": "GET /v1/payouts/{id}",
+          "notes": "Poll until paid"
+        }
+      ]
+    }
+  ]
+}
